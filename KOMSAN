@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KOMSAN AI | المنصة التعليمية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #070b14;
+            --bg-card: #111827;
+            --primary: #00f2fe;
+            --secondary: #4facfe;
+            --accent: #7c3aed;
+            --text-main: #ffffff;
+            --text-muted: #9ca3af;
+            --danger: #ef4444;
+            --success: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(0, 242, 254, 0.08) 0%, transparent 35%),
+                radial-gradient(circle at 85% 85%, rgba(124, 58, 237, 0.08) 0%, transparent 35%);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* الهيدر */
+        header {
+            background: rgba(17, 24, 39, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 242, 254, 0.18);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 20px;
+            color: #fff;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .student-badge {
+            background: rgba(0, 242, 254, 0.1);
+            border: 1px solid var(--primary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logout-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .logout-btn:hover {
+            opacity: 0.85;
+        }
+
+        /* شاشة تسجيل الدخول بالكود */
+        #login-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 85vh;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: var(--bg-card);
+            padding: 40px 30px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 460px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .login-card h1 {
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+
+        .login-card p {
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .code-input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: var(--bg-dark);
+            color: var(--primary);
+            font-size: 19px;
+            font-weight: 800;
+            text-align: center;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .code-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            color: #050811;
+            font-size: 17px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 242, 254, 0.35);
+        }
+
+        #error-msg {
+            color: var(--danger);
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+        }
+
+        /* شاشة الكورس والفيديوهات */
+        #course-section {
+            display: none;
+            max-width: 1280px;
+            margin: 25px auto;
+            padding: 0 20px;
+            grid-template-columns: 2.1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            #course-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* مشغل الفيديو المحمي */
+        .video-wrapper {
+            position: relative;
+            background: #000;
+            border-radius: 18px;
+            overflow: hidden;
+            aspect-ratio: 16 / 9;
+            border: 1px solid rgba(0, 242, 254, 0.25);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* العلامة المائية المتحركة لمنع التسريب */
+        .watermark {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.35);
+            font-size: 15px;
+            font-weight: 800;
+            pointer-events: none;
+            z-index: 15;
+            padding: 4px 12px;
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            white-space: nowrap;
+            animation: moveWatermark 16s infinite alternate ease-in-out;
+        }
+
+        @keyframes moveWatermark {
+            0% { top: 8%; right: 8%; }
+            25% { top: 72%; right: 55%; }
+            50% { top: 18%; right: 65%; }
+            75% { top: 78%; right: 12%; }
+            100% { top: 45%; right: 38%; }
+        }
+
+        /* شاشة الحماية السوداء عند محاولة الخروج أو التسجيل */
+        #security-curtain {
+            position: absolute;
+            inset: 0;
+            background: rgba(5, 8, 17, 0.98);
+            z-index: 25;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 25px;
+        }
+
+        #security-curtain h3 {
+            color: var(--danger);
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .resume-btn {
+            margin-top: 15px;
+            padding: 8px 20px;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .video-details {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 16px;
+            margin-top: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .security-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+            padding: 4px 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        /* قائمة الدروس */
+        .playlist-card {
+            background: var(--bg-card);
+            border-radius: 18px;
+            padding: 20px;
+            height: fit-content;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .playlist-card h3 {
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 18px;
+        }
+
+        .lesson-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .lesson-item:hover, .lesson-item.active {
+            background: rgba(0, 242, 254, 0.1);
+            border-color: rgba(0, 242, 254, 0.35);
+        }
+
+        .lesson-num {
+            width: 32px;
+            height: 32px;
+            background: rgba(0, 242, 254, 0.15);
+            color: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 800;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        @media print {
+            body { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- الهيدر -->
+    <header>
+        <div class="brand-wrap">
+            <div class="logo-icon">K</div>
+            <div class="logo">KOMSAN AI</div>
+        </div>
+        <div class="student-badge" id="student-badge">
+            <span>الكود الفعال: <strong id="active-code-display"></strong></span>
+            <button class="logout-btn" onclick="logout()">خروج</button>
+        </div>
+    </header>
+
+    <!-- قسم تسجيل الدخول بالكود -->
+    <section id="login-section">
+        <div class="login-card">
+            <h1>أكاديمية KOMSAN AI</h1>
+            <p>أدخل كود التفعيل الخاص بك لفتح محاضرات الكورس المحمية</p>
+            
+            <input type="text" id="access-code" class="code-input" placeholder="أدخل كود التفعيل هنا" autocomplete="off">
+            <button class="btn-primary" onclick="verifyCode()">تفعيل ودخول المنصة</button>
+            
+            <div id="error-msg">❌ هذا الكود غير صحيح، يرجى التأكد من الكود والمحاولة مجدداً.</div>
+        </div>
+    </section>
+
+    <!-- قسم الكورس والفيديوهات -->
+    <section id="course-section">
+        <!-- العمود الأيمن: الفيديو -->
+        <div>
+            <div class="video-wrapper" id="video-container">
+                <!-- العلامة المائية الديناميكية -->
+                <div class="watermark" id="watermark-text">KOMSAN AI</div>
+                
+                <!-- ستارة الحماية السوداء -->
+                <div id="security-curtain">
+                    <h3>⚠️ تم إيقاف الفيديو لحماية محتوى KOMSAN AI</h3>
+                    <p style="color: var(--text-muted); font-size: 14px;">لا يُسمح بمغادرة النافذة أو استخدام أدوات تصوير الشاشة أثناء تشغيل المحاضرة.</p>
+                    <button class="resume-btn" onclick="resumeVideo()">متابعة المشاهدة</button>
+                </div>
+
+                <!-- مشغل الفيديو -->
+                <video id="main-video" controls controlsList="nodownload noplaybackrate" disablePictureInPicture>
+                    <source id="video-source" src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                    متصفحك لا يدعم تشغيل الفيديو.
+                </video>
+            </div>
+
+            <div class="video-details">
+                <div class="security-status">🛡️ الحماية الذكية ومنع النسخ مفعّلة</div>
+                <h2 id="lesson-title">المحاضرة الأولى: أسرار التوليد البصري بالذكاء الاصطناعي</h2>
+                <p id="lesson-desc" style="color: var(--text-muted); margin-top: 8px; font-size: 14px;">
+                    في هذه المحاضرة من كورس KOMSAN AI نتعلم أساسيات بناء الصور الاحترافية وتصميم الهويات البصرية.
+                </p>
+            </div>
+        </div>
+
+        <!-- العمود الأيسر: قائمة المحاضرات -->
+        <div class="playlist-card">
+            <h3>محاضرات كورس KOMSAN AI</h3>
+            <div id="playlist-container">
+                <div class="lesson-item active" onclick="changeLesson(0, this)">
+                    <div class="lesson-num">1</div>
+                    <div>
+                        <h4 style="font-size: 15px;">أسرار التوليد البصري بالذكاء الاصطناعي</h4>
+                        <small style="color: var(--text-muted)">15 دقيقة • محمي</small>
+                    </div>
+                </div>
+                <div class="lesson-item" onclick="changeLesson(1, this)">
+                    <div class="lesson-num">2</div>
+                    <div>
+                        <h4 style="font-size: 15px;">تصميم الشعارات والواجهات التجارية</h4>
+                        <small style="color: var(--text-muted)">28 دقيقة • محمي</small>
+                    </div>
+                </div>
+                <div class="lesson-item" onclick="changeLesson(2, this)">
+                    <div class="lesson-num">3</div>
+                    <div>
+                        <h4 style="font-size: 15px;">إنتاج الإعلانات والمؤثرات السينمائية</h4>
+                        <small style="color: var(--text-muted)">35 دقيقة • محمي</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // ==========================================
+        // أكواد الدخول المعتمدة لمنصة KOMSAN AI
+        // ==========================================
+        const VALID_CODES = [
+            "11223344",
+            "1122334455",
+            "112233445566"
+        ];
+
+        const LESSONS = [
+            {
+                title: "المحاضرة الأولى: أسرار التوليد البصري بالذكاء الاصطناعي",
+                desc: "في هذه المحاضرة من كورس KOMSAN AI نتعلم أساسيات بناء الصور الاحترافية وتصميم الهويات البصرية.",
+                videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+            },
+            {
+                title: "المحاضرة الثانية: تصميم الشعارات والواجهات التجارية",
+                desc: "تطبيق عملي لتصميم يفط المحلات، الشعارات، وتغليف المنتجات بأحدث أدوات الذكاء الاصطناعي.",
+                videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+            },
+            {
+                title: "المحاضرة الثالثة: إنتاج الإعلانات والمؤثرات السينمائية",
+                desc: "كيف تصنع إعلاناً كاملاً بالصوت والصورة وتدمج الخطوط العربية الاحترافية داخل التصميم.",
+                videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+            }
+        ];
+
+        const videoElement = document.getElementById('main-video');
+        const securityCurtain = document.getElementById('security-curtain');
+
+        // تفعيل الدخول عند الضغط على زر Enter أيضاً
+        document.getElementById('access-code').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyCode();
+            }
+        });
+
+        function verifyCode() {
+            const input = document.getElementById('access-code').value.trim();
+            const errorMsg = document.getElementById('error-msg');
+
+            if (VALID_CODES.includes(input)) {
+                errorMsg.style.display = 'none';
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('course-section').style.display = 'grid';
+                document.getElementById('student-badge').style.display = 'flex';
+                
+                document.getElementById('active-code-display').innerText = input;
+                document.getElementById('watermark-text').innerText = `KOMSAN AI • ${input}`;
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        }
+
+        function logout() {
+            videoElement.pause();
+            document.getElementById('access-code').value = '';
+            document.getElementById('course-section').style.display = 'none';
+            document.getElementById('student-badge').style.display = 'none';
+            document.getElementById('login-section').style.display = 'flex';
+        }
+
+        function changeLesson(index, element) {
+            const lesson = LESSONS[index];
+            document.getElementById('lesson-title').innerText = lesson.title;
+            document.getElementById('lesson-desc').innerText = lesson.desc;
+            document.getElementById('video-source').src = lesson.videoUrl;
+            securityCurtain.style.display = 'none';
+            videoElement.load();
+            videoElement.play();
+
+            document.querySelectorAll('.lesson-item').forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        // أنظمة الحماية ومنع التصوير
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        document.addEventListener('keydown', function(e) {
+            if (
+                e.key === 'F12' || 
+                e.key === 'PrintScreen' ||
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C' || e.key === 'S')) ||
+                (e.ctrlKey && (e.key === 'u' || e.key === 's' || e.key === 'p')) ||
+                (e.metaKey && e.shiftKey)
+            ) {
+                e.preventDefault();
+                triggerSecurityLock();
+                return false;
+            }
+        });
+
+        window.addEventListener('blur', function() {
+            if (document.getElementById('course-section').style.display === 'grid') {
+                triggerSecurityLock();
+            }
+        });
+
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden && document.getElementById('course-section').style.display === 'grid') {
+                triggerSecurityLock();
+            }
+        });
+
+        function triggerSecurityLock() {
+            videoElement.pause();
+            securityCurtain.style.display = 'flex';
+        }
+
+        function resumeVideo() {
+            securityCurtain.style.display = 'none';
+            videoElement.play();
+        }
+    </script>
+</body>
+</html>
